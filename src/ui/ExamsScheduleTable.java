@@ -3,21 +3,17 @@ package ui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.SwingUtilities;
+import javax.swing.table.TableColumn;
 
 import dao.MySQLDAO;
-import ui.Menu;
 import vo.Auditorium;
+import vo.Course;
 import vo.Exam;
+import vo.Teacher;
 
 
 public class ExamsScheduleTable extends JFrame {
@@ -35,6 +31,31 @@ public class ExamsScheduleTable extends JFrame {
         model.addColumn("Дата");
         model.addColumn("Викладач");
         model.addColumn("Аудиторія");
+
+        //Dropdown list for courses
+        TableColumn courseColumn = jTabSchedule.getColumnModel().getColumn(0);
+        JComboBox comboBox0 = new JComboBox();
+        for(Course x : dao.readCourses()){
+            comboBox0.addItem(x.getName());
+        }
+        courseColumn.setCellEditor(new DefaultCellEditor(comboBox0));
+
+        //Dropdown list for auditoriums
+        TableColumn teachersColumn = jTabSchedule.getColumnModel().getColumn(3);
+        JComboBox comboBox3 = new JComboBox();
+        for(Teacher x : dao.readTeachers()){
+            comboBox3.addItem(x.getName());
+        }
+        teachersColumn.setCellEditor(new DefaultCellEditor(comboBox3));
+
+
+        //Dropdown list for auditoriums
+        TableColumn audsColumn = jTabSchedule.getColumnModel().getColumn(4);
+        JComboBox comboBox4 = new JComboBox();
+        for(Auditorium x : dao.readAuds()){
+            comboBox4.addItem(x.getNumber());
+        }
+        audsColumn.setCellEditor(new DefaultCellEditor(comboBox4));
 
         List<Exam> exams = dao.readExams();
         for(Exam x : exams){

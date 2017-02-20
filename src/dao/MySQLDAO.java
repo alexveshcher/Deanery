@@ -3,7 +3,9 @@ package dao;
 
 
 import vo.Auditorium;
+import vo.Course;
 import vo.Exam;
+import vo.Teacher;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -46,6 +48,48 @@ public class MySQLDAO {
                 a.setNumber(rs.getString("number"));
                 list.add(a);
                 System.out.println(a); //DEBUG
+            }
+            stm.close();
+        } catch (SQLException e) {
+            System.out.println("Feel the pain of sql:" + e);
+        }
+        return list;
+    }
+
+    public List<Course> readCourses(){
+        List<Course> list = new ArrayList<>();
+        String sql = "SELECT * FROM COURSE";
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            stm = getConnection().prepareStatement(sql);
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                Course x = new Course();
+                x.setName(rs.getString("name"));
+                list.add(x);
+                System.out.println(x); //DEBUG
+            }
+            stm.close();
+        } catch (SQLException e) {
+            System.out.println("Feel the pain of sql:" + e);
+        }
+        return list;
+    }
+
+    public List<Teacher> readTeachers(){
+        List<Teacher> list = new ArrayList<>();
+        String sql = "SELECT * FROM TEACHER";
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            stm = getConnection().prepareStatement(sql);
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                Teacher x = new Teacher();
+                x.setName(rs.getString("name"));
+                list.add(x);
+                System.out.println(x); //DEBUG
             }
             stm.close();
         } catch (SQLException e) {
