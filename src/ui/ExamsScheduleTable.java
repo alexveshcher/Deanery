@@ -40,7 +40,7 @@ public class ExamsScheduleTable extends JFrame {
         }
         courseColumn.setCellEditor(new DefaultCellEditor(comboBox0));
 
-        //Dropdown list for auditoriums
+        //Dropdown list for teachers
         TableColumn teachersColumn = jTabSchedule.getColumnModel().getColumn(3);
         JComboBox comboBox3 = new JComboBox();
         for(Teacher x : dao.readTeachers()){
@@ -59,7 +59,7 @@ public class ExamsScheduleTable extends JFrame {
 
         List<Exam> exams = dao.readExams();
         for(Exam x : exams){
-            model.addRow(new Object[] { x.getCourse_name(), x.getGroup_year(), x.getDate(), x.getProfessor_id() , x.getAud() });
+            model.addRow(new Object[] { x.getCourse_name(), x.getGroup_year(), x.getDate(), dao.readTeacher(x.getProfessor_id()).get(0).getName() , x.getAud() });
 
         }
 
@@ -89,7 +89,8 @@ public class ExamsScheduleTable extends JFrame {
                     x.setCourse_name(model.getValueAt(model.getRowCount()-1,0).toString());
                     x.setGroup_year(Integer.parseInt(model.getValueAt(model.getRowCount()-1,1).toString()));
                     x.setDate(Date.valueOf(model.getValueAt(model.getRowCount()-1,2).toString()));
-                    x.setProfessor_id(Integer.parseInt(model.getValueAt(model.getRowCount()-1,3).toString()));
+                    x.setProfessor_id(dao.readTeacher(model.getValueAt(model.getRowCount()-1,3).toString()).get(0).getId());
+                    System.out.println(dao.readTeacher(model.getValueAt(model.getRowCount()-1,3).toString()).get(0).getId());
                     x.setAud(model.getValueAt(model.getRowCount()-1,4).toString());
                     dao.addExam(x);
                     System.out.println(x);

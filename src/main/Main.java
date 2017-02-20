@@ -11,9 +11,11 @@ import javax.swing.*;
 public class Main {
     public static void main(String[] args) {
         new Menu();
-//        MySQLDAO mySQLDAO = new MySQLDAO();
+        MySQLDAO mySQLDAO = new MySQLDAO();
 //        mySQLDAO.getConnection();
 //        mySQLDAO.readAuds();
 //        mySQLDAO.readExams();
+//        System.out.println(mySQLDAO.readTeacher("Glybovets").get(0));
+        System.out.println(mySQLDAO.readTeacher(1).get(0));
     }
 }

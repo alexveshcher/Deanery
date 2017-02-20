@@ -98,6 +98,53 @@ public class MySQLDAO {
         return list;
     }
 
+    public List<Teacher> readTeacher(String name){
+        List<Teacher> list = new ArrayList<>();
+        String sql = "SELECT * FROM TEACHER\n" +
+                "WHERE name='"+ name + "'";
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            stm = getConnection().prepareStatement(sql);
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                Teacher x = new Teacher();
+                x.setId(rs.getInt("id"));
+                x.setName(rs.getString("name"));
+                list.add(x);
+                System.out.println(x); //DEBUG
+            }
+            stm.close();
+        } catch (SQLException e) {
+            System.out.println("Feel the pain of sql:" + e);
+        }
+        return list;
+    }
+
+    public List<Teacher> readTeacher(int id){
+        List<Teacher> list = new ArrayList<>();
+        String sql = "SELECT * FROM TEACHER\n" +
+                "WHERE id='"+ id + "'";
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            stm = getConnection().prepareStatement(sql);
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                Teacher x = new Teacher();
+                x.setId(rs.getInt("id"));
+                x.setName(rs.getString("name"));
+                list.add(x);
+                System.out.println(x); //DEBUG
+            }
+            stm.close();
+        } catch (SQLException e) {
+            System.out.println("Feel the pain of sql:" + e);
+        }
+        return list;
+    }
+
+
     public List<Exam> readExams(){
         List<Exam> list = new ArrayList<>();
         String sql = "SELECT * FROM EXAM";
