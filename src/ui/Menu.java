@@ -26,7 +26,7 @@ public class Menu extends JFrame {
     private void initialize() {
         mainFrm = new JFrame("Вхід в систему");
         mainFrm.getContentPane().setLayout(new FlowLayout());
-        mainFrm.setSize(400, 400);
+        mainFrm.setSize(500, 500);
         mainFrm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         ok = new JButton("Вхід");
         schedule = new JButton("Розклад сесії");

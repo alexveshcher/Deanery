@@ -3,6 +3,7 @@ package dao;
 
 
 import vo.Auditorium;
+import vo.Exam;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -51,6 +52,49 @@ public class MySQLDAO {
             System.out.println("Feel the pain of sql:" + e);
         }
         return list;
+    }
+
+    public List<Exam> readExams(){
+        List<Exam> list = new ArrayList<>();
+        String sql = "SELECT * FROM EXAM";
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            stm = getConnection().prepareStatement(sql);
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                Exam x = new Exam();
+                x.setCourse_name(rs.getString("course_name"));
+                x.setGroup_year(rs.getInt("group_year"));
+                x.setDate(rs.getDate("date"));
+                x.setProfessor_id(rs.getInt("professor_id"));
+                x.setAud(rs.getString("aud"));
+                list.add(x);
+                System.out.println(x); //DEBUG
+            }
+            stm.close();
+        } catch (SQLException e) {
+            System.out.println("Feel the pain of sql:" + e);
+        }
+        return list;
+    }
+
+    public void addExam(Exam x){
+        String sql = "INSERT INTO EXAM (course_name, group_year, date, professor_id, aud) VALUES ("+
+                "'" + x.getCourse_name()+"',"+
+                "'" + x.getGroup_year()+"',"+
+                "'" + x.getDate()+"',"+
+                "'" + x.getProfessor_id()+"',"+
+                "'" + x.getAud()+"');";
+        PreparedStatement stm = null;
+        try {
+            stm = getConnection().prepareStatement(sql);
+            stm.executeUpdate();
+            stm.close();
+        } catch (SQLException e) {
+            System.out.println("Feel the pain of sql:" + e);
+        }
+        System.out.printf(sql); //DEBUG
     }
 
 //    @Override
