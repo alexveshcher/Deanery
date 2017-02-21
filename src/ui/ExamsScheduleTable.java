@@ -59,8 +59,7 @@ public class ExamsScheduleTable extends JFrame {
 
         List<Exam> exams = dao.readExams();
         for(Exam x : exams){
-            model.addRow(new Object[] { x.getCourse_name(), x.getGroup_year(), x.getDate(), dao.readTeacher(x.getProfessor_id()).get(0).getName() , x.getAud() });
-
+            model.addRow(new Object[] { x.getCourse_name(), x.getGroup_year(), x.getDate(), dao.readTeacherById(x.getProfessor_id()).getName() , x.getAud() });
         }
 
 //        model.addRow(new Object[] { "ТМ", "4", "20.04.2017", "А. О. Афонін", "2-214" });
@@ -89,14 +88,22 @@ public class ExamsScheduleTable extends JFrame {
                     x.setCourse_name(model.getValueAt(model.getRowCount()-1,0).toString());
                     x.setGroup_year(Integer.parseInt(model.getValueAt(model.getRowCount()-1,1).toString()));
                     x.setDate(Date.valueOf(model.getValueAt(model.getRowCount()-1,2).toString()));
-                    x.setProfessor_id(dao.readTeacher(model.getValueAt(model.getRowCount()-1,3).toString()).get(0).getId());
-                    System.out.println(dao.readTeacher(model.getValueAt(model.getRowCount()-1,3).toString()).get(0).getId());
+                    x.setProfessor_id(dao.readTeacherByName(model.getValueAt(model.getRowCount()-1,3).toString()).get(0).getId());
                     x.setAud(model.getValueAt(model.getRowCount()-1,4).toString());
                     dao.addExam(x);
                     System.out.println(x);
                 }
             }
         });
+    }
+
+    private Date getTypedDate(){
+        Date date = Date.valueOf("2005-01-01");
+        if(model.getRowCount() > 0){
+            date = Date.valueOf(model.getValueAt(model.getRowCount()-1,2).toString());
+        }
+//        System.out.println(date);
+        return date;
     }
 
 }

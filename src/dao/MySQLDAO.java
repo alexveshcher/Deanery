@@ -26,12 +26,14 @@ public class MySQLDAO {
         Connection conn = null;
         try {
             conn = DriverManager.getConnection("jdbc:mysql://localhost/"
-                    + database + "?user=" + user + "&password=" + password);
+                    + database + "?user=" + user + "&password=" + password
+                    + "&autoReconnect=true&useSSL=false"
+            );
 //            conn = DriverManager.getConnection("jdbc:mysql://eu-cdbr-azure-west-d.cloudapp.net/acsm_7c8aacf011bf046?user=b0253c18790b3c&password=d5e58ccb");
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println("You've successfully connected to DB");
+//        System.out.println("You've successfully connected to DB");
         return conn;
     }
 
@@ -47,7 +49,32 @@ public class MySQLDAO {
                 Auditorium a = new Auditorium();
                 a.setNumber(rs.getString("number"));
                 list.add(a);
-                System.out.println(a); //DEBUG
+//                System.out.println(a); //DEBUG
+            }
+            stm.close();
+        } catch (SQLException e) {
+            System.out.println("Feel the pain of sql:" + e);
+        }
+        return list;
+    }
+
+    public List<Auditorium> readFreeAuds(Date date){
+        List<Auditorium> list = new ArrayList<>();
+        String sql = "SELECT number\n" +
+                "FROM AUDITORIUM\n" +
+                "WHERE number NOT IN (SELECT aud\n" +
+                "                     FROM EXAM\n" +
+                "                     WHERE date = '"+date+"');";
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            stm = getConnection().prepareStatement(sql);
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                Auditorium a = new Auditorium();
+                a.setNumber(rs.getString("number"));
+                list.add(a);
+//                System.out.println(a); //DEBUG
             }
             stm.close();
         } catch (SQLException e) {
@@ -68,7 +95,7 @@ public class MySQLDAO {
                 Course x = new Course();
                 x.setName(rs.getString("name"));
                 list.add(x);
-                System.out.println(x); //DEBUG
+//                System.out.println(x); //DEBUG
             }
             stm.close();
         } catch (SQLException e) {
@@ -89,7 +116,7 @@ public class MySQLDAO {
                 Teacher x = new Teacher();
                 x.setName(rs.getString("name"));
                 list.add(x);
-                System.out.println(x); //DEBUG
+//                System.out.println(x); //DEBUG
             }
             stm.close();
         } catch (SQLException e) {
@@ -98,7 +125,7 @@ public class MySQLDAO {
         return list;
     }
 
-    public List<Teacher> readTeacher(String name){
+    public List<Teacher> readTeacherByName(String name){
         List<Teacher> list = new ArrayList<>();
         String sql = "SELECT * FROM TEACHER\n" +
                 "WHERE name='"+ name + "'";
@@ -112,7 +139,7 @@ public class MySQLDAO {
                 x.setId(rs.getInt("id"));
                 x.setName(rs.getString("name"));
                 list.add(x);
-                System.out.println(x); //DEBUG
+//                System.out.println(x); //DEBUG
             }
             stm.close();
         } catch (SQLException e) {
@@ -121,8 +148,8 @@ public class MySQLDAO {
         return list;
     }
 
-    public List<Teacher> readTeacher(int id){
-        List<Teacher> list = new ArrayList<>();
+    public Teacher readTeacherById(int id){
+        Teacher x = new Teacher();
         String sql = "SELECT * FROM TEACHER\n" +
                 "WHERE id='"+ id + "'";
         PreparedStatement stm = null;
@@ -131,17 +158,15 @@ public class MySQLDAO {
             stm = getConnection().prepareStatement(sql);
             rs = stm.executeQuery();
             while (rs.next()) {
-                Teacher x = new Teacher();
                 x.setId(rs.getInt("id"));
                 x.setName(rs.getString("name"));
-                list.add(x);
-                System.out.println(x); //DEBUG
+                x.setDepartment_name(rs.getString("name"));
             }
             stm.close();
         } catch (SQLException e) {
             System.out.println("Feel the pain of sql:" + e);
         }
-        return list;
+        return x;
     }
 
 
@@ -161,7 +186,7 @@ public class MySQLDAO {
                 x.setProfessor_id(rs.getInt("professor_id"));
                 x.setAud(rs.getString("aud"));
                 list.add(x);
-                System.out.println(x); //DEBUG
+//                System.out.println(x); //DEBUG
             }
             stm.close();
         } catch (SQLException e) {
@@ -185,123 +210,7 @@ public class MySQLDAO {
         } catch (SQLException e) {
             System.out.println("Feel the pain of sql:" + e);
         }
-        System.out.printf(sql); //DEBUG
+//        System.out.printf(sql); //DEBUG
     }
 
-//    @Override
-//    public Book readBook(int key) throws SQLException {
-//        Book b = new Book();
-//        String sql = "SELECT * FROM APP.BOOKS\n"
-//                + "WHERE ID = "+key+"\n";
-//        //+ "OR PUBLISHINGYEAR LIKE %"+Integer.parseInt(searchWord)+"%";
-//
-//        PreparedStatement stm = getConnection().prepareStatement(sql);
-//        ResultSet rs = stm.executeQuery();
-//
-//        while (rs.next()) {
-//            b.setId(rs.getInt("id"));
-//            b.setTitle(rs.getString("title"));
-//            b.setAuthors(rs.getString("authors"));
-//            b.setYear(rs.getInt("publishingyear"));
-//
-//        }
-//        return b;
-//    }
-//
-//    /*
-//        @Override
-//        public List<Book> getAllBooks() throws SQLException {
-//            String sql = "SELECT * FROM APP.BOOKS";
-//            PreparedStatement stm = getConnection().prepareStatement(sql);
-//            ResultSet rs = stm.executeQuery();
-//            List<Book> list = new ArrayList<Book>();
-//            while (rs.next()) {
-//                Book b = new Book();
-//                b.setId(rs.getInt("id"));
-//                b.setTitle(rs.getString("title"));
-//                b.setAuthors(rs.getString("authors"));
-//                b.setYear(rs.getInt("publishingyear"));
-//
-//                list.add(b);
-//            }
-//            return list;
-//        }
-//    */
-//    public List<Book> searchBook(String searchWord) throws SQLException {
-//        List<Book> list = null;
-//        String sql = "SELECT * FROM APP.BOOKS\n"
-//                + "WHERE AUTHORS LIKE '%"+searchWord+"%'\n"
-//                + "OR TITLE LIKE '%"+searchWord+"%'\n";
-//        //+ "OR PUBLISHINGYEAR LIKE %"+Integer.parseInt(searchWord)+"%";
-//
-//        PreparedStatement stm = getConnection().prepareStatement(sql);
-//        ResultSet rs = stm.executeQuery();
-//        list = new ArrayList<Book>();
-//        while (rs.next()) {
-//            Book b = new Book();
-//            b.setId(rs.getInt("id"));
-//            b.setTitle(rs.getString("title"));
-//            b.setAuthors(rs.getString("authors"));
-//            b.setYear(rs.getInt("publishingyear"));
-//
-//            list.add(b);
-//        }
-//        return list;
-//    }
-//
-//
-//
-//
-//
-//    @Override
-//    public void makeOrder(Order ord) throws SQLException {
-//        String sql = "INSERT INTO APP.ORDERS (BOOK_ID, STUDENT_ID, COMPLETED) VALUES ("
-//                +ord.getBook().getId()+","+
-//                +ord.getStudent()+","
-//                +ord.isCompleted()+")";
-//        PreparedStatement stm = getConnection().prepareStatement(sql);
-//        stm.executeUpdate();
-//        stm.close();
-//    }
-//
-//
-//
-//
-//
-//    @Override
-//    public List<Order> getUncompleted() throws SQLException {
-//        String sql = "SELECT * FROM orders WHERE COMPLETED=FALSE ";
-//        PreparedStatement stm = getConnection().prepareStatement(sql);
-//        ResultSet rs = stm.executeQuery();
-//        List<Order> list = new ArrayList<Order>();
-//        Book b;
-//
-//        while (rs.next()) {
-//            Order ord = new Order();
-//            ord.setId(rs.getInt("id"));
-//            b = readBook(rs.getInt("BOOK_ID"));
-//            ord.setBook(b);
-//            ord.setStudent(rs.getInt("STUDENT_ID"));
-//            ord.setCompleted(rs.getBoolean("completed"));
-//            list.add(ord);
-//        }
-//        return list;
-//    }
-//
-//    public List<Order> search(String searchWord) throws SQLException {
-//        List<Order> list = null;
-//        String sql = "SELECT * FROM APP.ORDERS\n" + "WHERE ID LIKE '%"
-//                + searchWord + "%'\n" + "OR BOOK_ID LIKE '%" + searchWord
-//                + "%'\n";
-//
-//        PreparedStatement stm = getConnection().prepareStatement(sql);
-//        ResultSet rs = stm.executeQuery();
-//        list = new ArrayList<Order>();
-//        while (rs.next()) {
-//            Order ord = new Order();
-//            ord.setId(rs.getInt("id"));
-//            list.add(ord);
-//        }
-//        return list;
-//    }
 }
