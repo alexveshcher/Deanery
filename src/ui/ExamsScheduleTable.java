@@ -3,6 +3,8 @@ package ui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Date;
 import java.util.List;
 import javax.swing.*;
@@ -49,18 +51,37 @@ public class ExamsScheduleTable extends JFrame {
         teachersColumn.setCellEditor(new DefaultCellEditor(comboBox3));
 
 
-        //Dropdown list for auditoriums
-        TableColumn audsColumn = jTabSchedule.getColumnModel().getColumn(4);
-        JComboBox comboBox4 = new JComboBox();
-        for(Auditorium x : dao.readAuds()){
-            comboBox4.addItem(x.getNumber());
-        }
-        audsColumn.setCellEditor(new DefaultCellEditor(comboBox4));
+//        //Dropdown list for auditoriums
+//        TableColumn audsColumn = jTabSchedule.getColumnModel().getColumn(4);
+//        JComboBox comboBox4 = new JComboBox();
+//        for(Auditorium x : dao.readAuds()){
+//            comboBox4.addItem(x.getNumber());
+//        }
+//        audsColumn.setCellEditor(new DefaultCellEditor(comboBox4));
 
         List<Exam> exams = dao.readExams();
         for(Exam x : exams){
             model.addRow(new Object[] { x.getCourse_name(), x.getGroup_year(), x.getDate(), dao.readTeacherById(x.getProfessor_id()).getName() , x.getAud() });
         }
+        jTabSchedule.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                JTable target = (JTable) e.getSource();
+                int row = target.getSelectedRow();
+                int column = target.getSelectedColumn();
+//                System.out.println(row + " " + column);
+                if(column == 4 && row == model.getRowCount()-1){
+//                    System.out.println("auds triggered");
+                    //Dropdown list for auditoriums
+                    TableColumn audsColumn = jTabSchedule.getColumnModel().getColumn(4);
+                    JComboBox comboBox4 = new JComboBox();
+                    for(Auditorium x : dao.readFreeAuds(getTypedDate())){
+                        comboBox4.addItem(x.getNumber());
+                    }
+                    audsColumn.setCellEditor(new DefaultCellEditor(comboBox4));
+                }
+            }
+        });
 
 //        model.addRow(new Object[] { "ТМ", "4", "20.04.2017", "А. О. Афонін", "2-214" });
 //        model.addRow(new Object[] { "ІС", "4", "24.04.2017", "О. П. Жежерун", "1-223" });
@@ -99,7 +120,7 @@ public class ExamsScheduleTable extends JFrame {
 
     private Date getTypedDate(){
         Date date = Date.valueOf("2005-01-01");
-        if(model.getRowCount() > 0){
+        if(model.getRowCount() > 0 && !model.getValueAt(model.getRowCount()-1,2).toString().isEmpty()){
             date = Date.valueOf(model.getValueAt(model.getRowCount()-1,2).toString());
         }
 //        System.out.println(date);

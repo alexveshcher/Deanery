@@ -172,7 +172,8 @@ public class MySQLDAO {
 
     public List<Exam> readExams(){
         List<Exam> list = new ArrayList<>();
-        String sql = "SELECT * FROM EXAM";
+        String sql = "SELECT * FROM EXAM " +
+                "ORDER BY date";
         PreparedStatement stm = null;
         ResultSet rs = null;
         try {
