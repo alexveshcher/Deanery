@@ -21,5 +21,6 @@ public class Main {
 //        mySQLDAO.readFreeAuds(Date.valueOf("2017-03-03"));
 //        mySQLDAO.readExamsByTeacherName("Glyb");
 //        mySQLDAO.readExamByCourseNameAndGroupYear("BMT",2);
+//        mySQLDAO.readCourseFromExamsByTeacherName("Glyb");
     }
 }

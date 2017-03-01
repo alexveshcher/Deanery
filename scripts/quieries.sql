@@ -42,3 +42,10 @@ WHERE course_name = 'BMT' AND group_year='3';
 
 
 # Запит: Для заданого іспиту вивести середній бал студентів
+
+
+# Вивести предмети, екзамени яких прововить викладач
+SELECT course_name FROM EXAM
+WHERE professor_id = (SELECT id FROM TEACHER
+WHERE TEACHER.name = 'Glyb')
+ORDER BY date;

@@ -15,6 +15,7 @@ public class Menu extends JFrame {
     private JButton menu;
     private JButton exams;
     private JButton teachersExams;
+    private JButton results;
     public static JFrame mainFrm;
 
     public Menu() {
@@ -31,17 +32,17 @@ public class Menu extends JFrame {
         menu = new JButton("Головне меню");
         exams = new JButton("Іспити");
         teachersExams = new JButton("Розклад екзаменів викладача");
+        results = new JButton("Результати сесії");
 
         mainFrm.getContentPane().add(schedule);
         mainFrm.setLocationRelativeTo(null);
         mainFrm.setVisible(true);
 
+
         schedule.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 schedule.setVisible(false);
-                mainFrm.getContentPane().add(menu);
-                mainFrm.getContentPane().add(exams);
-                mainFrm.getContentPane().add(teachersExams);
+                addTopButtons();
                 //hope it is the correct way to refresh elements
                 mainFrm.revalidate();
                 mainFrm.repaint();
@@ -62,9 +63,7 @@ public class Menu extends JFrame {
                 exams.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         mainFrm.getContentPane().removeAll();
-                        mainFrm.getContentPane().add(menu);
-                        mainFrm.getContentPane().add(exams);
-                        mainFrm.getContentPane().add(teachersExams);
+                        addTopButtons();
                         mainFrm.revalidate();
                         mainFrm.repaint();
                         new ExamsScheduleTable();
@@ -74,16 +73,31 @@ public class Menu extends JFrame {
                 teachersExams.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         mainFrm.getContentPane().removeAll();
-                        mainFrm.getContentPane().add(menu);
-                        mainFrm.getContentPane().add(exams);
-                        mainFrm.getContentPane().add(teachersExams);
+                        addTopButtons();
                         mainFrm.revalidate();
                         mainFrm.repaint();
                         new TeachersExamsFrame();
                     }
                 });
+
+                results.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        mainFrm.getContentPane().removeAll();
+                        addTopButtons();
+                        mainFrm.revalidate();
+                        mainFrm.repaint();
+                        new ExamResultsFrame();
+                    }
+                });
             }
         });
+    }
+
+    private void addTopButtons(){
+        mainFrm.getContentPane().add(menu);
+        mainFrm.getContentPane().add(exams);
+        mainFrm.getContentPane().add(teachersExams);
+        mainFrm.getContentPane().add(results);
     }
 
 }
