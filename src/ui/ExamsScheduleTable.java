@@ -20,7 +20,7 @@ import vo.Teacher;
 import static ui.Menu.mainFrm;
 
 
-public class ExamsScheduleTable extends JFrame {
+public class ExamsScheduleTable extends JFrame  {
 
     DefaultTableModel model = new DefaultTableModel();
 

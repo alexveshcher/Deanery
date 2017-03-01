@@ -49,3 +49,27 @@ SELECT course_name FROM EXAM
 WHERE professor_id = (SELECT id FROM TEACHER
 WHERE TEACHER.name = 'Glyb')
 ORDER BY date;
+
+SELECT student_id
+FROM RESULT
+WHERE group_id = (SELECT id
+                  FROM TGROUP, EXAM
+                  WHERE TGROUP.year = EXAM.group_year AND TGROUP.course_name = EXAM.course_name);
+
+SELECT name
+FROM STUDENT
+WHERE id = (SELECT student_id
+            FROM RESULT
+            WHERE group_id = (SELECT id
+                              FROM TGROUP, EXAM
+                              WHERE TGROUP.year = EXAM.group_year AND TGROUP.course_name = EXAM.course_name));
+
+SELECT *
+FROM RESULT
+WHERE group_id = (SELECT id
+                  FROM TGROUP, EXAM
+                  WHERE TGROUP.year = EXAM.group_year AND TGROUP.course_name = EXAM.course_name);
+
+UPDATE RESULT
+SET mark = '50'
+WHERE group_id = 1 AND student_id = 1;

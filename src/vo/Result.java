@@ -6,7 +6,7 @@ package vo;
 public class Result {
     private int group_id;
     private int student_id;
-    private double mark;
+    private String mark;
 
     public int getGroup_id() {
         return group_id;
@@ -24,11 +24,11 @@ public class Result {
         this.student_id = student_id;
     }
 
-    public double getMark() {
+    public String getMark() {
         return mark;
     }
 
-    public void setMark(double mark) {
+    public void setMark(String mark) {
         this.mark = mark;
     }
 

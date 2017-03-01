@@ -2,10 +2,7 @@ package dao;
 
 
 
-import vo.Auditorium;
-import vo.Course;
-import vo.Exam;
-import vo.Teacher;
+import vo.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -330,6 +327,108 @@ public class MySQLDAO {
         return 79.05;
     }
 
+    public List<Student> readStudentsByCourseExam(String course_name){
+        List<Student> list = new ArrayList<>();
+        String sql = "SELECT *\n" +
+                "FROM STUDENT\n" +
+                "WHERE id = (SELECT student_id\n" +
+                "            FROM RESULT\n" +
+                "            WHERE group_id = (SELECT id\n" +
+                "                              FROM TGROUP, EXAM\n" +
+                "                              WHERE TGROUP.year = EXAM.group_year AND TGROUP.course_name = '"+ course_name+ "'));";
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            stm = getConnection().prepareStatement(sql);
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                Student x = new Student();
+                x.setId(rs.getInt("id"));
+                x.setName(rs.getString("name"));
+                //need to add other fields
+                list.add(x);
+                System.out.println(x); //DEBUG
+            }
+            stm.close();
+        } catch (SQLException e) {
+            System.out.println("Feel the pain of sql:" + e);
+        }
+        return list;
+    }
+
+    public List<Result> readResultsByCourseExam(String course_name){
+        List<Result> list = new ArrayList<>();
+        String sql = "SELECT *\n" +
+                "FROM STUDENT\n" +
+                "WHERE id = (SELECT student_id\n" +
+                "            FROM RESULT\n" +
+                "            WHERE group_id = (SELECT id\n" +
+                "                              FROM TGROUP, EXAM\n" +
+                "                              WHERE TGROUP.year = EXAM.group_year AND TGROUP.course_name = '"+ course_name+ "'));";
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            stm = getConnection().prepareStatement(sql);
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                Result x = new Result();
+                x.setGroup_id(rs.getInt("group_id"));
+                x.setStudent_id(rs.getInt("student_id"));
+                x.setMark(rs.getString("mark"));
+                //need to add other fields
+                list.add(x);
+                System.out.println(x); //DEBUG
+            }
+            stm.close();
+        } catch (SQLException e) {
+            System.out.println("Feel the pain of sql:" + e);
+        }
+        return list;
+    }
+
+    public Result readResultByStudentId(int student_id, String course_name){
+        Result x = new Result();
+        String sql = "SELECT *\n" +
+                "            FROM RESULT\n" +
+                "            WHERE group_id = (SELECT id\n" +
+                "                              FROM TGROUP, EXAM\n" +
+                "                              WHERE TGROUP.year = EXAM.group_year AND TGROUP.course_name = '"+ course_name+ "');";
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            stm = getConnection().prepareStatement(sql);
+            rs = stm.executeQuery();
+            while (rs.next()) {
+
+                x.setGroup_id(rs.getInt("group_id"));
+                x.setStudent_id(rs.getInt("student_id"));
+                x.setMark(rs.getString("mark"));
+                //need to add other fields
+                System.out.println(x); //DEBUG
+            }
+            stm.close();
+        } catch (SQLException e) {
+            System.out.println("Feel the pain of sql:" + e);
+        }
+        return x;
+    }
+
+    public void updateResultMark(int student_id, int group_id, String mark){
+        String sql = "UPDATE RESULT\n" +
+                "SET mark = '" + mark +"'\n" +
+                "WHERE group_id ="+ group_id +" AND student_id ="+ student_id +";";
+
+        Statement stm = null;
+
+        try {
+            stm = getConnection().createStatement();
+            stm.executeUpdate(sql);
+            stm.close();
+            getConnection().close();
+        } catch (SQLException e) {
+            System.out.println("Feel the pain of sql:" + e);
+        }
+    }
 
 
 }
