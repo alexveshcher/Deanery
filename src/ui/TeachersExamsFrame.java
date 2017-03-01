@@ -37,7 +37,7 @@ public class TeachersExamsFrame extends JFrame{
         model.addColumn("Аудиторія");
 
         scrollPane = new JScrollPane(table);
-        table.setPreferredScrollableViewportSize(new Dimension(350, 200));
+        table.setPreferredScrollableViewportSize(new Dimension(850, 200));
         Menu.mainFrm.getContentPane().add(scrollPane);
         Menu.mainFrm.setVisible(true);
 

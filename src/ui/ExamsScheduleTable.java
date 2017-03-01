@@ -17,6 +17,8 @@ import vo.Course;
 import vo.Exam;
 import vo.Teacher;
 
+import static ui.Menu.mainFrm;
+
 
 public class ExamsScheduleTable extends JFrame {
 
@@ -77,22 +79,24 @@ public class ExamsScheduleTable extends JFrame {
         });
 
         scrollPane = new JScrollPane(table);
-        table.setPreferredScrollableViewportSize(new Dimension(450, 200));
-        JButton addRow = new JButton("Додати");
+        table.setPreferredScrollableViewportSize(new Dimension(850, 200));
+        JButton addButton = new JButton("Додати");
+        JButton statsButton = new JButton("Статистика");
         boolean isConfirmedd = true;
-        Menu.mainFrm.getContentPane().add(scrollPane);
-        Menu.mainFrm.getContentPane().add(addRow);
-        Menu.mainFrm.setVisible(true);
-        addRow.addActionListener(new ActionListener() {
+        mainFrm.getContentPane().add(scrollPane);
+        mainFrm.getContentPane().add(addButton);
+        mainFrm.getContentPane().add(statsButton);
+        mainFrm.setVisible(true);
+        addButton.addActionListener(new ActionListener() {
             boolean isConfirmed = isConfirmedd;
             public void actionPerformed(ActionEvent e) {
                 if(isConfirmed){
-                    addRow.setText("Підтвердити");
+                    addButton.setText("Підтвердити");
                     model.addRow(new Object[] { "", "", "", "", "" });
                     isConfirmed = false;
                 }
                 else {
-                    addRow.setText("Додати");
+                    addButton.setText("Додати");
                     isConfirmed = true;
                     Exam x = new Exam();
                     x.setCourse_name(model.getValueAt(model.getRowCount()-1,0).toString());
@@ -104,6 +108,22 @@ public class ExamsScheduleTable extends JFrame {
                     System.out.println(x);
                 }
             }
+        });
+        statsButton.addActionListener(e -> {
+            int selectedRow = table.getSelectedRow();
+            //ensuring we have selected row
+            if(selectedRow > -1){
+                String course_name = model.getValueAt(selectedRow,0).toString();
+                int group_year = Integer.parseInt(model.getValueAt(selectedRow,1).toString());
+                mainFrm.getContentPane().remove(scrollPane);
+                mainFrm.getContentPane().remove(addButton);
+                mainFrm.getContentPane().remove(statsButton);
+                mainFrm.revalidate();
+                mainFrm.repaint();
+
+                new StatisticsFrame(course_name,group_year);
+            }
+
         });
     }
 

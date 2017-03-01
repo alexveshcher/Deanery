@@ -12,13 +12,14 @@ import java.sql.Date;
 public class Main {
     public static void main(String[] args) {
         new Menu();
-        MySQLDAO mySQLDAO = new MySQLDAO();
+//        MySQLDAO mySQLDAO = new MySQLDAO();
 //        mySQLDAO.getConnection();
 //        mySQLDAO.readAuds();
 //        mySQLDAO.readExams();
 //        System.out.println(mySQLDAO.readTeacherByName("Glybovets").get(0));
 //        System.out.println(mySQLDAO.readTeacherById(1));
 //        mySQLDAO.readFreeAuds(Date.valueOf("2017-03-03"));
-        mySQLDAO.readExamsByTeacherName("Glyb");
+//        mySQLDAO.readExamsByTeacherName("Glyb");
+//        mySQLDAO.readExamByCourseNameAndGroupYear("BMT",2);
     }
 }

@@ -241,6 +241,70 @@ public class MySQLDAO {
         return list;
     }
 
+    public Exam readExamByCourseNameAndGroupYear(String course_name, int group_year){
+        Exam x = new Exam();
 
+        String sql = "SELECT * FROM EXAM\n" +
+                "WHERE course_name = '" +course_name+ "' AND group_year='"+group_year+"'" ;
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            stm = getConnection().prepareStatement(sql);
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                x.setCourse_name(rs.getString("course_name"));
+                x.setGroup_year(rs.getInt("group_year"));
+                x.setDate(rs.getDate("date"));
+                x.setProfessor_id(rs.getInt("professor_id"));
+                x.setAud(rs.getString("aud"));
+            }
+            stm.close();
+        } catch (SQLException e) {
+            System.out.println("Feel the pain of sql:" + e);
+        }
+        return x;
+    }
+
+    public int studentsWithA(){
+        String sql = "";
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            stm = getConnection().prepareStatement(sql);
+            rs = stm.executeQuery();
+            stm.close();
+        } catch (SQLException e) {
+//            System.out.println("Feel the pain of sql:" + e);
+        }
+        return 0;
+    }
+
+    public int studentsWithB(){
+        return 0;
+    }
+
+    public int studentsWithC(){
+        return 0;
+    }
+
+    public int studentsWithD(){
+        return 0;
+    }
+
+    public int studentsWithE(){
+        return 0;
+    }
+
+    public int studentsWithF(){
+        return 0;
+    }
+
+    public int notPresentStudents(){
+        return 0;
+    }
+
+    public double averageMark(){
+        return 79.05;
+    }
 
 }

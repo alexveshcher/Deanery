@@ -22,6 +22,10 @@ WHERE professor_id = (SELECT id FROM TEACHER
 WHERE TEACHER.name = 'Glyb')
 ORDER BY date;
 
+#Знайти екзамен за назвою дисципліни і роком групи
+SELECT * FROM EXAM
+WHERE course_name = 'BMT' AND group_year='3';
+
 # Запит: Вивести екзамени, які організовує задана кафедра
 
 
