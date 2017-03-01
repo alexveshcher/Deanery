@@ -214,4 +214,33 @@ public class MySQLDAO {
 //        System.out.printf(sql); //DEBUG
     }
 
+    public List<Exam> readExamsByTeacherName(String name){
+        List<Exam> list = new ArrayList<>();
+        String sql = "SELECT * FROM EXAM\n" +
+                "WHERE professor_id = (SELECT id FROM TEACHER\n" +
+                "WHERE TEACHER.name = '"+ name + "')" +
+                "ORDER BY date";
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            stm = getConnection().prepareStatement(sql);
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                Exam x = new Exam();
+                x.setCourse_name(rs.getString("course_name"));
+                x.setGroup_year(rs.getInt("group_year"));
+                x.setDate(rs.getDate("date"));
+                x.setAud(rs.getString("aud"));
+                list.add(x);
+                System.out.println(x); //DEBUG
+            }
+            stm.close();
+        } catch (SQLException e) {
+            System.out.println("Feel the pain of sql:" + e);
+        }
+        return list;
+    }
+
+
+
 }

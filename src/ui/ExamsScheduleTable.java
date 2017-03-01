@@ -22,12 +22,12 @@ public class ExamsScheduleTable extends JFrame {
 
     DefaultTableModel model = new DefaultTableModel();
 
-    public static JTable jTabSchedule;
-    public static JScrollPane jscrlp;
+    public static JTable table;
+    public static JScrollPane scrollPane;
 
     public ExamsScheduleTable() {
         MySQLDAO dao = new MySQLDAO();
-        jTabSchedule = new JTable(model);
+        table = new JTable(model);
         model.addColumn("Дисципліна");
         model.addColumn("Рік навчання");
         model.addColumn("Дата");
@@ -35,7 +35,7 @@ public class ExamsScheduleTable extends JFrame {
         model.addColumn("Аудиторія");
 
         //Dropdown list for courses
-        TableColumn courseColumn = jTabSchedule.getColumnModel().getColumn(0);
+        TableColumn courseColumn = table.getColumnModel().getColumn(0);
         JComboBox comboBox0 = new JComboBox();
         for(Course x : dao.readCourses()){
             comboBox0.addItem(x.getName());
@@ -43,27 +43,20 @@ public class ExamsScheduleTable extends JFrame {
         courseColumn.setCellEditor(new DefaultCellEditor(comboBox0));
 
         //Dropdown list for teachers
-        TableColumn teachersColumn = jTabSchedule.getColumnModel().getColumn(3);
+        TableColumn teachersColumn = table.getColumnModel().getColumn(3);
         JComboBox comboBox3 = new JComboBox();
         for(Teacher x : dao.readTeachers()){
             comboBox3.addItem(x.getName());
         }
         teachersColumn.setCellEditor(new DefaultCellEditor(comboBox3));
 
-
-//        //Dropdown list for auditoriums
-//        TableColumn audsColumn = jTabSchedule.getColumnModel().getColumn(4);
-//        JComboBox comboBox4 = new JComboBox();
-//        for(Auditorium x : dao.readAuds()){
-//            comboBox4.addItem(x.getNumber());
-//        }
-//        audsColumn.setCellEditor(new DefaultCellEditor(comboBox4));
-
+        //add all exams from database and show them
         List<Exam> exams = dao.readExams();
         for(Exam x : exams){
             model.addRow(new Object[] { x.getCourse_name(), x.getGroup_year(), x.getDate(), dao.readTeacherById(x.getProfessor_id()).getName() , x.getAud() });
         }
-        jTabSchedule.addMouseListener(new MouseAdapter() {
+
+        table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
                 JTable target = (JTable) e.getSource();
@@ -73,7 +66,7 @@ public class ExamsScheduleTable extends JFrame {
                 if(column == 4 && row == model.getRowCount()-1){
 //                    System.out.println("auds triggered");
                     //Dropdown list for auditoriums
-                    TableColumn audsColumn = jTabSchedule.getColumnModel().getColumn(4);
+                    TableColumn audsColumn = table.getColumnModel().getColumn(4);
                     JComboBox comboBox4 = new JComboBox();
                     for(Auditorium x : dao.readFreeAuds(getTypedDate())){
                         comboBox4.addItem(x.getNumber());
@@ -83,15 +76,11 @@ public class ExamsScheduleTable extends JFrame {
             }
         });
 
-//        model.addRow(new Object[] { "ТМ", "4", "20.04.2017", "А. О. Афонін", "2-214" });
-//        model.addRow(new Object[] { "ІС", "4", "24.04.2017", "О. П. Жежерун", "1-223" });
-//        model.addRow(new Object[] { "УПП", "4", "28.04.2017",  "В. С. Проценко", "1-310" });
-//        model.addRow(new Object[] { "УПП", "4", "28.04.2017",  "В. С. Проценко", auds.get(1).getNumber() });
-        jscrlp = new JScrollPane(jTabSchedule);
-        jTabSchedule.setPreferredScrollableViewportSize(new Dimension(450, 200));
+        scrollPane = new JScrollPane(table);
+        table.setPreferredScrollableViewportSize(new Dimension(450, 200));
         JButton addRow = new JButton("Додати");
         boolean isConfirmedd = true;
-        Menu.mainFrm.getContentPane().add(jscrlp);
+        Menu.mainFrm.getContentPane().add(scrollPane);
         Menu.mainFrm.getContentPane().add(addRow);
         Menu.mainFrm.setVisible(true);
         addRow.addActionListener(new ActionListener() {
@@ -123,7 +112,6 @@ public class ExamsScheduleTable extends JFrame {
         if(model.getRowCount() > 0 && !model.getValueAt(model.getRowCount()-1,2).toString().isEmpty()){
             date = Date.valueOf(model.getValueAt(model.getRowCount()-1,2).toString());
         }
-//        System.out.println(date);
         return date;
     }
 
