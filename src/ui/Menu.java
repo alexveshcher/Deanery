@@ -98,7 +98,7 @@ public class Menu extends JFrame {
                 dateExams.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         redraw();
-//                        new DateExamsFrame();
+                        new DateExamsFrame();
                     }
                 });
 
