@@ -26,7 +26,7 @@ public class Menu extends JFrame {
     }
 
     private void initialize() {
-        mainFrm = new JFrame("Вхід в систему");
+        mainFrm = new JFrame("Деканат");
         mainFrm.getContentPane().setLayout(new FlowLayout());
         mainFrm.setSize(900, 500);
         mainFrm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -84,7 +84,7 @@ public class Menu extends JFrame {
                 departmentExams.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         redraw();
-//                        new DepartmentExamsFrame();
+                        new DepartmentExamsFrame();
                     }
                 });
 

@@ -124,6 +124,48 @@ public class MySQLDAO {
         return list;
     }
 
+    public List<Department> readDepartments(){
+        List<Department> list = new ArrayList<>();
+        String sql = "SELECT * FROM DEPARTMENT";
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            stm = getConnection().prepareStatement(sql);
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                Department x = new Department();
+                x.setName(rs.getString("name"));
+                list.add(x);
+//                System.out.println(x); //DEBUG
+            }
+            stm.close();
+        } catch (SQLException e) {
+            System.out.println("Feel the pain of sql:" + e);
+        }
+        return list;
+    }
+
+    public List<TGroup> readGroups(){
+        List<TGroup> list = new ArrayList<>();
+        String sql = "SELECT * FROM DEPARTMENT";
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            stm = getConnection().prepareStatement(sql);
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                TGroup x = new TGroup();
+                x.setId(rs.getInt("id"));
+                list.add(x);
+//                System.out.println(x); //DEBUG
+            }
+            stm.close();
+        } catch (SQLException e) {
+            System.out.println("Feel the pain of sql:" + e);
+        }
+        return list;
+    }
+
     public List<Teacher> readTeacherByName(String name){
         List<Teacher> list = new ArrayList<>();
         String sql = "SELECT * FROM TEACHER\n" +
@@ -218,6 +260,33 @@ public class MySQLDAO {
         String sql = "SELECT * FROM EXAM\n" +
                 "WHERE professor_id = (SELECT id FROM TEACHER\n" +
                 "WHERE TEACHER.name = '"+ name + "')" +
+                "ORDER BY date";
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            stm = getConnection().prepareStatement(sql);
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                Exam x = new Exam();
+                x.setCourse_name(rs.getString("course_name"));
+                x.setGroup_year(rs.getInt("group_year"));
+                x.setDate(rs.getDate("date"));
+                x.setAud(rs.getString("aud"));
+                list.add(x);
+                System.out.println(x); //DEBUG
+            }
+            stm.close();
+        } catch (SQLException e) {
+            System.out.println("Feel the pain of sql:" + e);
+        }
+        return list;
+    }
+
+    public List<Exam> readExamsByDepartmentName(String name){
+        List<Exam> list = new ArrayList<>();
+        String sql = "SELECT * FROM EXAM\n" +
+                "WHERE course_name IN (SELECT name FROM COURSE\n" +
+                "WHERE department_name = '"+ name + "')" +
                 "ORDER BY date";
         PreparedStatement stm = null;
         ResultSet rs = null;
