@@ -15,6 +15,9 @@ public class Menu extends JFrame {
     private JButton menu;
     private JButton exams;
     private JButton teachersExams;
+    private JButton departmentExams;
+    private JButton groupExams;
+    private JButton dateExams;
     private JButton results;
     public static JFrame mainFrm;
 
@@ -32,6 +35,10 @@ public class Menu extends JFrame {
         menu = new JButton("Головне меню");
         exams = new JButton("Іспити");
         teachersExams = new JButton("Розклад екзаменів викладача");
+        departmentExams = new JButton("Розклад екзаменів кафедри");
+        groupExams = new JButton("Розклад екзаменів групи");
+        dateExams = new JButton("Розклад екзаменів за датою");
+
         results = new JButton("Результати сесії");
 
         mainFrm.getContentPane().add(schedule);
@@ -62,30 +69,42 @@ public class Menu extends JFrame {
 
                 exams.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        mainFrm.getContentPane().removeAll();
-                        addTopButtons();
-                        mainFrm.revalidate();
-                        mainFrm.repaint();
+                        redraw();
                         new ExamsScheduleTable();
                     }
                 });
 
                 teachersExams.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        mainFrm.getContentPane().removeAll();
-                        addTopButtons();
-                        mainFrm.revalidate();
-                        mainFrm.repaint();
+                        redraw();
                         new TeachersExamsFrame();
+                    }
+                });
+
+                departmentExams.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        redraw();
+//                        new DepartmentExamsFrame();
+                    }
+                });
+
+                groupExams.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        redraw();
+//                        new GroupExamsFrame();
+                    }
+                });
+
+                dateExams.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        redraw();
+//                        new DateExamsFrame();
                     }
                 });
 
                 results.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        mainFrm.getContentPane().removeAll();
-                        addTopButtons();
-                        mainFrm.revalidate();
-                        mainFrm.repaint();
+                        redraw();
                         new ExamResultsFrame();
                     }
                 });
@@ -97,7 +116,17 @@ public class Menu extends JFrame {
         mainFrm.getContentPane().add(menu);
         mainFrm.getContentPane().add(exams);
         mainFrm.getContentPane().add(teachersExams);
+        mainFrm.getContentPane().add(departmentExams);
+        mainFrm.getContentPane().add(groupExams);
+        mainFrm.getContentPane().add(dateExams);
         mainFrm.getContentPane().add(results);
+    }
+
+    private void redraw(){
+        mainFrm.getContentPane().removeAll();
+        addTopButtons();
+        mainFrm.revalidate();
+        mainFrm.repaint();
     }
 
 }

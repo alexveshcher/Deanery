@@ -15,18 +15,20 @@ conn =DriverManager.getConnection("jdbc:mysql://eu-cdbr-azure-west-d.cloudapp.ne
  */
 
 public class MySQLDAO {
+    private final String CON1 = "jdbc:mysql://eu-cdbr-azure-west-d.cloudapp.net/acsm_7c8aacf011bf046?" +
+            "user=b0253c18790b3c&password=d5e58ccb";
+
+    private final String CON2 = "jdbc:mysql://localhost/"
+            + "deanery?user=admin&password=12345678"
+            + "&autoReconnect=true&useSSL=false";
+
+    private final String CON3 = "jdbc:mysql://194.44.143.138/projman2?" +
+            "user=projman2&password=!projman";
 
     public Connection getConnection()  {
-        String user = "admin";
-        String password = "12345678";
-        String database = "deanery";
         Connection conn = null;
         try {
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/"
-                    + database + "?user=" + user + "&password=" + password
-                    + "&autoReconnect=true&useSSL=false"
-            );
-//            conn = DriverManager.getConnection("jdbc:mysql://eu-cdbr-azure-west-d.cloudapp.net/acsm_7c8aacf011bf046?user=b0253c18790b3c&password=d5e58ccb");
+            conn = DriverManager.getConnection(CON2);
         } catch (SQLException e) {
             e.printStackTrace();
         }
