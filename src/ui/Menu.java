@@ -91,7 +91,7 @@ public class Menu extends JFrame {
                 groupExams.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         redraw();
-//                        new GroupExamsFrame();
+                        new GroupExamsFrame();
                     }
                 });
 

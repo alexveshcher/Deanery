@@ -1,8 +1,8 @@
 package ui;
 
 import dao.MySQLDAO;
-import vo.Department;
 import vo.Exam;
+import vo.TGroup;
 import vo.Teacher;
 
 import javax.swing.*;
@@ -13,20 +13,20 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 
-public class DepartmentExamsFrame extends JFrame{
+public class GroupExamsFrame extends JFrame{
     DefaultTableModel model = new DefaultTableModel();
 
     public static JTable table;
     public static JScrollPane scrollPane;
-    JComboBox departmentComboBox;
+    JComboBox groupComboBox;
 
     private static final String NOT_SELECTABLE_OPTION = " - ... - ";
 
-    public DepartmentExamsFrame() {
+    public GroupExamsFrame() {
         MySQLDAO dao = new MySQLDAO();
 
-        departmentComboBox = new JComboBox();
-        departmentComboBox.setModel(new DefaultComboBoxModel() {
+        groupComboBox = new JComboBox();
+        groupComboBox.setModel(new DefaultComboBoxModel() {
             private static final long serialVersionUID = 1L;
             boolean selectionAllowed = true;
 
@@ -42,17 +42,17 @@ public class DepartmentExamsFrame extends JFrame{
             }
         });
 
-        departmentComboBox.addItem(NOT_SELECTABLE_OPTION);
-        for(Department x : dao.readDepartments()){
-            departmentComboBox.addItem(x.getName());
+        groupComboBox.addItem(NOT_SELECTABLE_OPTION);
+        for(TGroup x : dao.readGroups()){
+            groupComboBox.addItem(x.getId());
         }
-        Menu.mainFrm.getContentPane().add(departmentComboBox);
+        Menu.mainFrm.getContentPane().add(groupComboBox);
 
         table = new JTable(model);
         model.addColumn("Дисципліна");
         model.addColumn("Рік навчання");
         model.addColumn("Дата");
-//        model.addColumn("Викладач");
+        model.addColumn("Викладач");
         model.addColumn("Аудиторія");
 
         scrollPane = new JScrollPane(table);
@@ -60,14 +60,14 @@ public class DepartmentExamsFrame extends JFrame{
         Menu.mainFrm.getContentPane().add(scrollPane);
         Menu.mainFrm.setVisible(true);
 
-        departmentComboBox.addActionListener(new ActionListener() {
+        groupComboBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 //remove all rows from table
                 model.setRowCount(0);
                 //add all exams from database and show them
-                List<Exam> exams = dao.readExamsByDepartmentName(departmentComboBox.getSelectedItem().toString());
+                List<Exam> exams = dao.readExamsByGroupId(Integer.valueOf(groupComboBox.getSelectedItem().toString()));
                 for(Exam x : exams){
-                    model.addRow(new Object[] { x.getCourse_name(), x.getGroup_year(), x.getDate(), x.getAud() });
+                    model.addRow(new Object[] { x.getCourse_name(), x.getGroup_year(), x.getDate(), dao.readTeacherById(x.getProfessor_id()).getName() , x.getAud() });
                 }
             }
         });

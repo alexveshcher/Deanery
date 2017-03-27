@@ -46,7 +46,6 @@ public class TeachersExamsFrame extends JFrame{
         for(Teacher x : dao.readTeachers()){
             teachersComboBox.addItem(x.getName());
         }
-        teachersComboBox.setSelectedItem("d");
         Menu.mainFrm.getContentPane().add(teachersComboBox);
 
         table = new JTable(model);

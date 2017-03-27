@@ -147,7 +147,7 @@ public class MySQLDAO {
 
     public List<TGroup> readGroups(){
         List<TGroup> list = new ArrayList<>();
-        String sql = "SELECT * FROM DEPARTMENT";
+        String sql = "SELECT * FROM TGROUP";
         PreparedStatement stm = null;
         ResultSet rs = null;
         try {
@@ -298,6 +298,34 @@ public class MySQLDAO {
                 x.setCourse_name(rs.getString("course_name"));
                 x.setGroup_year(rs.getInt("group_year"));
                 x.setDate(rs.getDate("date"));
+                x.setAud(rs.getString("aud"));
+                list.add(x);
+                System.out.println(x); //DEBUG
+            }
+            stm.close();
+        } catch (SQLException e) {
+            System.out.println("Feel the pain of sql:" + e);
+        }
+        return list;
+    }
+
+    public List<Exam> readExamsByGroupId(int id){
+        List<Exam> list = new ArrayList<>();
+        String sql = "SELECT * FROM EXAM\n" +
+                "WHERE course_name   IN (SELECT course_name  FROM TGROUP \n" +
+                "WHERE id = '"+ id + "')" +
+                "ORDER BY date";
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            stm = getConnection().prepareStatement(sql);
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                Exam x = new Exam();
+                x.setCourse_name(rs.getString("course_name"));
+                x.setGroup_year(rs.getInt("group_year"));
+                x.setDate(rs.getDate("date"));
+                x.setProfessor_id(rs.getInt("professor_id"));
                 x.setAud(rs.getString("aud"));
                 list.add(x);
                 System.out.println(x); //DEBUG
