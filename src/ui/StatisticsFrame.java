@@ -17,10 +17,12 @@ public class StatisticsFrame extends JFrame {
 
     public StatisticsFrame(String course_name, int group_year) {
         MySQLDAO dao = new MySQLDAO();
+        JPanel statsPanel = new JPanel();
+        statsPanel.setLayout(new GridLayout(0, 1));
         JLabel exam = new JLabel("Іспит: " + dao.readExamByCourseNameAndGroupYear(course_name,group_year));
 
         JLabel text1 = new JLabel("Кількість студентів");
-        JLabel a = new JLabel("A: " + dao.studentsWithA());
+        JLabel a = new JLabel("A: " + dao.studentsWithA(course_name,group_year));
         JLabel b = new JLabel("B: " + dao.studentsWithB());
         JLabel c = new JLabel("C: " + dao.studentsWithC());
         JLabel d = new JLabel("D: " + dao.studentsWithD());
@@ -28,18 +30,19 @@ public class StatisticsFrame extends JFrame {
         JLabel f = new JLabel("F: " + dao.studentsWithF());
 
         JLabel notPresent = new JLabel("Не присутні: " + dao.notPresentStudents());
-        JLabel average = new JLabel("Середній бал: " + dao.averageMark());
+        JLabel average = new JLabel("Середній бал: " + dao.averageMark(course_name,group_year));
 
-        Menu.mainFrm.getContentPane().add(exam);
-        Menu.mainFrm.getContentPane().add(text1);
-        Menu.mainFrm.getContentPane().add(a);
-        Menu.mainFrm.getContentPane().add(b);
-        Menu.mainFrm.getContentPane().add(c);
-        Menu.mainFrm.getContentPane().add(d);
-        Menu.mainFrm.getContentPane().add(e);
-        Menu.mainFrm.getContentPane().add(f);
-        Menu.mainFrm.getContentPane().add(notPresent);
-        Menu.mainFrm.getContentPane().add(average);
+        statsPanel.add(exam);
+        statsPanel.add(text1);
+        statsPanel.add(a);
+        statsPanel.add(b);
+        statsPanel.add(c);
+        statsPanel.add(d);
+        statsPanel.add(e);
+        statsPanel.add(f);
+        statsPanel.add(notPresent);
+        statsPanel.add(average);
+        Menu.mainFrm.add(statsPanel);
         Menu.mainFrm.setVisible(true);
 
     }

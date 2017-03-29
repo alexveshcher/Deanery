@@ -258,7 +258,7 @@ public class MySQLDAO {
     public List<Exam> readExamsByTeacherName(String name){
         List<Exam> list = new ArrayList<>();
         String sql = "SELECT * FROM EXAM\n" +
-                "WHERE professor_id = (SELECT id FROM TEACHER\n" +
+                "WHERE professor_id IN (SELECT id FROM TEACHER\n" +
                 "WHERE TEACHER.name = '"+ name + "')" +
                 "ORDER BY date";
         PreparedStatement stm = null;
@@ -411,18 +411,30 @@ public class MySQLDAO {
         return list;
     }
 
-    public int studentsWithA(){
-        String sql = "";
+    public int studentsWithA(String course_name, int group_year){
+        int res = 14;
+        String sql = "SELECT COUNT(DISTINCT student_id) as 'count'\n" +
+                "FROM RESULT\n" +
+                "WHERE mark (BETWEEN 91 AND 100) AND group_id IN (SELECT id\t\t\n" +
+                "  \t\t\t\t\t\t                         FROM TGROUP\n" +
+                "  \t\t\t\t\t\t                         WHERE year IN (SELECT group_year\n" +
+                "  \t\t\t\t\t\t           \t                                            FROM EXAM\n" +
+                "  \t\t\t\t\t\t           \t                                            WHERE course_name ='" + course_name +"' AND group_year = '"+ group_year+"'));";
+
         PreparedStatement stm = null;
         ResultSet rs = null;
         try {
             stm = getConnection().prepareStatement(sql);
             rs = stm.executeQuery();
+            while (rs.next()) {
+                res = rs.getInt("count");
+                System.out.println(res); //DEBUG
+            }
             stm.close();
         } catch (SQLException e) {
-//            System.out.println("Feel the pain of sql:" + e);
+            System.out.println("Feel the pain of sql:" + e);
         }
-        return 0;
+        return res;
     }
 
     public int studentsWithB(){
@@ -449,8 +461,30 @@ public class MySQLDAO {
         return 0;
     }
 
-    public double averageMark(){
-        return 79.05;
+    public double averageMark(String course_name, int group_year){
+        double res = 77.9;
+        String sql = "SELECT AVG(mark)\n" +
+                "FROM RESULT\n" +
+                "WHERE group_id IN (SELECT id\t\t\n" +
+                "  \t\t\t\t         FROM TGROUP\n" +
+                "  \t\t\t\t         WHERE year IN (SELECT group_year\n" +
+                "  \t\t\t\t\t\t           \t                        FROM EXAM\n" +
+                "  \t\t\t\t\t\t           \t                        WHERE course_name = '"+ course_name+ "' AND group_year = '"+ group_year+"'));";
+
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            stm = getConnection().prepareStatement(sql);
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                res = rs.getDouble("AVG(mark)");
+                System.out.println(res); //DEBUG
+            }
+            stm.close();
+        } catch (SQLException e) {
+            System.out.println("Feel the pain of sql:" + e);
+        }
+        return res;
     }
 
     public List<Student> readStudentsByCourseExam(String course_name){
