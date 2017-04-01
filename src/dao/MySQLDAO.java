@@ -23,7 +23,7 @@ public class MySQLDAO {
             + "&autoReconnect=true&useSSL=false";
 
     private final String CON3 = "jdbc:mysql://194.44.143.138/projman2?" +
-            "user=projman2&password=!projman";
+            "user=projman2&password=!projman_2";
 
     public Connection getConnection()  {
         Connection conn = null;
@@ -391,7 +391,7 @@ public class MySQLDAO {
     public List<String> readCourseFromExamsByTeacherName(String name){
         List<String> list = new ArrayList<>();
         String sql = "SELECT course_name FROM EXAM\n" +
-                "WHERE professor_id = (SELECT id FROM TEACHER\n" +
+                "WHERE professor_id IN (SELECT id FROM TEACHER\n" +
                 "WHERE TEACHER.name = '"+ name + "')" +
                 "ORDER BY date";
         PreparedStatement stm = null;
@@ -415,7 +415,7 @@ public class MySQLDAO {
         int res = 14;
         String sql = "SELECT COUNT(DISTINCT student_id) as 'count'\n" +
                 "FROM RESULT\n" +
-                "WHERE mark (BETWEEN 91 AND 100) AND group_id IN (SELECT id\t\t\n" +
+                "WHERE mark BETWEEN 91 AND 100 AND group_id IN (SELECT id\t\t\n" +
                 "  \t\t\t\t\t\t                         FROM TGROUP\n" +
                 "  \t\t\t\t\t\t                         WHERE year IN (SELECT group_year\n" +
                 "  \t\t\t\t\t\t           \t                                            FROM EXAM\n" +
@@ -552,7 +552,7 @@ public class MySQLDAO {
         Result x = new Result();
         String sql = "SELECT *\n" +
                 "            FROM RESULT\n" +
-                "            WHERE group_id = (SELECT id\n" +
+                "            WHERE group_id IN (SELECT id\n" +
                 "                              FROM TGROUP, EXAM\n" +
                 "                              WHERE TGROUP.year = EXAM.group_year AND TGROUP.course_name = '"+ course_name+ "');";
         PreparedStatement stm = null;
@@ -581,6 +581,7 @@ public class MySQLDAO {
                 "WHERE group_id ="+ group_id +" AND student_id ="+ student_id +";";
 
         Statement stm = null;
+        System.out.println(sql);
 
         try {
             stm = getConnection().createStatement();

@@ -31,7 +31,7 @@ public class Menu extends JFrame {
         mainFrm.setSize(900, 500);
         mainFrm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        schedule = new JButton("Розклад сесії");
+        schedule = new JButton("Увійти в систему");
         menu = new JButton("Головне меню");
         exams = new JButton("Іспити");
         teachersExams = new JButton("Розклад екзаменів викладача");
