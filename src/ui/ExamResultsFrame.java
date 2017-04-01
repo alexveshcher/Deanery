@@ -2,18 +2,11 @@ package ui;
 
 
 import dao.MySQLDAO;
-import vo.Course;
-import vo.Exam;
-import vo.Student;
-import vo.Teacher;
+import vo.*;
 
 import javax.swing.*;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,8 +23,6 @@ public class ExamResultsFrame extends JFrame {
     public static JScrollPane scrollPane;
 
     private JButton saveButton;
-
-    private int lastColumn, lastRow = 0;
 
     List<Student> list;
     MySQLDAO dao;
@@ -75,9 +66,11 @@ public class ExamResultsFrame extends JFrame {
             model.setRowCount(0);
             System.out.println("now should appear student table");
             if(courseComboBox.getSelectedItem()!=null) {
-                for (Student x : dao.readStudentsByCourseExam(courseComboBox.getSelectedItem().toString())) {
-                    model.addRow(new Object[]{x.getName(), dao.readResultByStudentId(x.getId(), courseComboBox.getSelectedItem().toString()).getMark()});
-                    list.add(x);
+                List<Result> results = dao.readResultsByCourseExam(courseComboBox.getSelectedItem().toString());
+                List<Student> students = dao.readStudentsByCourseExam(courseComboBox.getSelectedItem().toString());
+                for (int i = 0; i < students.size(); i++) {
+                    model.addRow(new Object[]{students.get(i).getName(), results.get(i).getMark()});
+                    list.add(students.get(i));
                 }
             }
         });
@@ -94,7 +87,13 @@ public class ExamResultsFrame extends JFrame {
         Map<Integer,Integer> marks =  new HashMap<>();
         int tableSize = table.getRowCount();
         for(int i = 0; i < tableSize; i++){
-            marks.put(list.get(i).getId(),Integer.valueOf(table.getValueAt(i,1).toString()));
+            String markCell =  table.getValueAt(i,1).toString();
+            Integer mark = null;
+            if(!markCell.equals("")){
+                mark = Integer.valueOf(markCell);
+            }
+
+            marks.put(list.get(i).getId(),mark);
 //            System.out.println(marks.get(list.get(i).getId()));
         }
         return marks;
@@ -104,7 +103,11 @@ public class ExamResultsFrame extends JFrame {
         Map<Integer,Integer> map = marks();
         for (Integer key : map.keySet()) {
 //            System.out.println(key + ": " +  map.get(key));
-            dao.updateResultMark(key, dao.readResultByStudentId(0 , courseComboBox.getSelectedItem().toString()).getGroup_id(), map.get(key).toString());
+            String mark = "";
+            if(map.get(key) != null){
+                mark = map.get(key).toString();
+            }
+            dao.updateResultMark(key, dao.readResultByStudentId(0 , courseComboBox.getSelectedItem().toString()).getGroup_id(), mark);
 
         }
     }

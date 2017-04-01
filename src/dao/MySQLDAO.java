@@ -518,13 +518,16 @@ public class MySQLDAO {
 
     public List<Result> readResultsByCourseExam(String course_name){
         List<Result> list = new ArrayList<>();
-        String sql = "SELECT *\n" +
+        String sql = "SELECT * " +
+                "FROM RESULT " +
+                "WHERE student_id IN (" +
+                "SELECT id \n" +
                 "FROM STUDENT\n" +
-                "WHERE id = (SELECT student_id\n" +
+                "WHERE id IN (SELECT student_id\n" +
                 "            FROM RESULT\n" +
-                "            WHERE group_id = (SELECT id\n" +
+                "            WHERE group_id IN (SELECT id\n" +
                 "                              FROM TGROUP, EXAM\n" +
-                "                              WHERE TGROUP.year = EXAM.group_year AND TGROUP.course_name = '"+ course_name+ "'));";
+                "                              WHERE TGROUP.year = EXAM.group_year AND TGROUP.course_name = '"+ course_name+ "')));";
         PreparedStatement stm = null;
         ResultSet rs = null;
         try {
@@ -557,6 +560,7 @@ public class MySQLDAO {
                 "                              WHERE TGROUP.year = EXAM.group_year AND TGROUP.course_name = '"+ course_name+ "');";
         PreparedStatement stm = null;
         ResultSet rs = null;
+//        System.out.println(sql);
         try {
             stm = getConnection().prepareStatement(sql);
             rs = stm.executeQuery();
