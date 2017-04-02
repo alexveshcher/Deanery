@@ -255,6 +255,29 @@ public class MySQLDAO {
 //        System.out.printf(sql); //DEBUG
     }
 
+    public void updateExam(Exam old, Exam updated){
+        String sql = "UPDATE EXAM SET course_name = ?, group_year = ?,  date = ? , professor_id = ?, aud = ?" +
+                "WHERE course_name = ? AND group_year = ?";
+
+        System.out.println(sql);
+
+        try {
+            PreparedStatement ps = getConnection().prepareStatement(sql);
+            ps.setString(1,updated.getCourse_name());
+            ps.setInt(2, updated.getGroup_year());
+            ps.setDate(3,updated.getDate());
+            ps.setInt(4,updated.getProfessor_id());
+            ps.setString(5,updated.getAud());
+            ps.setString(6, old.getCourse_name());
+            ps.setInt(7, old.getGroup_year());
+
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println("Feel the pain of sql:" + e);
+        }
+    }
+
     public List<Exam> readExamsByTeacherName(String name){
         List<Exam> list = new ArrayList<>();
         String sql = "SELECT * FROM EXAM\n" +

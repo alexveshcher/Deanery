@@ -49,9 +49,9 @@ public class ExamResultsFrame extends JFrame {
         scrollPane = new JScrollPane(table);
         table.setPreferredScrollableViewportSize(new Dimension(850, 200));
         saveButton = new JButton("Save");
-        Menu.mainFrm.getContentPane().add(saveButton);
 
         Menu.mainFrm.getContentPane().add(scrollPane);
+        Menu.mainFrm.getContentPane().add(saveButton);
         Menu.mainFrm.setVisible(true);
 
         teacherComboBox.addActionListener(e -> {

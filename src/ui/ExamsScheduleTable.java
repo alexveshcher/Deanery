@@ -1,11 +1,12 @@
 package ui;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Date;
+import java.util.*;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -82,10 +83,12 @@ public class ExamsScheduleTable extends JFrame  {
         table.setPreferredScrollableViewportSize(new Dimension(850, 200));
         JButton addButton = new JButton("Додати");
         JButton statsButton = new JButton("Статистика");
+        JButton editButton = new JButton("Змінити");
         boolean isConfirmedd = true;
         mainFrm.getContentPane().add(scrollPane);
         mainFrm.getContentPane().add(addButton);
         mainFrm.getContentPane().add(statsButton);
+        mainFrm.getContentPane().add(editButton);
         mainFrm.setVisible(true);
         addButton.addActionListener(new ActionListener() {
             boolean isConfirmed = isConfirmedd;
@@ -124,6 +127,87 @@ public class ExamsScheduleTable extends JFrame  {
                 new StatisticsFrame(course_name,group_year);
             }
 
+        });
+        editButton.addActionListener(e -> {
+            int i = table.getSelectedRow();
+
+            Vector vector = (Vector) model.getDataVector().get(i);
+            Object[] objArray = vector.toArray();
+
+            Exam exam = new Exam();
+            exam.setCourse_name(objArray[0].toString());
+            exam.setGroup_year((int) objArray[1]);
+            exam.setDate((Date) objArray[2]);
+            exam.setAud((String) objArray[4]);
+
+
+            JTextField yearField = new JTextField(5);
+            JTextField dateField = new JTextField(5);
+            dateField.setText(exam.getDate().toString());
+
+            yearField.setText(String.valueOf(exam.getGroup_year()));
+
+            JComboBox courseBox = new JComboBox();
+            for(Course x : dao.readCourses()){
+                courseBox.addItem(x.getName());
+            }
+
+            courseBox.setSelectedItem(exam.getCourse_name());
+
+            JComboBox teacherBox = new JComboBox();
+            for(Teacher x : dao.readTeachers()){
+                teacherBox.addItem(x.getName());
+            }
+            teacherBox.setSelectedItem(objArray[3]);
+
+            JComboBox auditoriumBox = new JComboBox();
+            for(Auditorium x : dao.readFreeAuds(getTypedDate())){
+                auditoriumBox.addItem(x.getNumber());
+            }
+            auditoriumBox.setSelectedItem(exam.getAud());
+
+
+
+            JPanel myPanel = new JPanel(new GridLayout(5,2));
+            myPanel.setPreferredSize(new Dimension(350,100));
+            myPanel.add(new JLabel("Дисципліна:"));
+            myPanel.add(courseBox);
+            myPanel.add(new JLabel("Рік навчання:"));
+            myPanel.add(yearField);
+            myPanel.add(new JLabel("Дата:"));
+            myPanel.add(dateField);
+            myPanel.add(new JLabel("Викладач:"));
+            myPanel.add(teacherBox);
+            myPanel.add(new JLabel("Аудиторія:"));
+            myPanel.add(auditoriumBox);
+
+
+
+            int result = JOptionPane.showConfirmDialog(null, myPanel,
+                    "Введіть нові дані", JOptionPane.OK_CANCEL_OPTION);
+            if (result == JOptionPane.OK_OPTION) {
+//                System.out.println("x value: " + courseNameField.getText());
+                System.out.println("y value: " + yearField.getText());
+
+                Exam x = new Exam();
+                x.setCourse_name(courseBox.getSelectedItem().toString());
+                x.setGroup_year(Integer.valueOf(yearField.getText()));
+                x.setDate(Date.valueOf(dateField.getText()));
+                x.setProfessor_id(dao.readTeacherByName(teacherBox.getSelectedItem().toString()).get(0).getId());
+                x.setAud(auditoriumBox.getSelectedItem().toString());
+                dao.updateExam(exam, x);
+
+            }
+//            System.out.println(model.getDataVector().get(0));
+//            Vector vector = (Vector) model.getDataVector().get(0);
+//            Object[] objArray = vector.toArray();
+//
+//            Exam exam = new Exam();
+//            exam.setCourse_name(objArray[0].toString());
+//            exam.setGroup_year((int) objArray[1]);
+//            exam.setDate((Date) objArray[2]);
+//            exam.setProfessor_id((int) objArray[3]);
+//            System.out.println();
         });
     }
 
