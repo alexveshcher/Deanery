@@ -27,9 +27,10 @@ public class ExamsScheduleTable extends JFrame  {
 
     public static JTable table;
     public static JScrollPane scrollPane;
+    MySQLDAO dao;
 
     public ExamsScheduleTable() {
-        MySQLDAO dao = new MySQLDAO();
+        dao = new MySQLDAO();
         table = new JTable(model);
         model.addColumn("Дисципліна");
         model.addColumn("Рік навчання");
@@ -84,11 +85,14 @@ public class ExamsScheduleTable extends JFrame  {
         JButton addButton = new JButton("Додати");
         JButton statsButton = new JButton("Статистика");
         JButton editButton = new JButton("Змінити");
+        JButton deleteButton = new JButton("Видалити");
+
         boolean isConfirmedd = true;
         mainFrm.getContentPane().add(scrollPane);
-        mainFrm.getContentPane().add(addButton);
         mainFrm.getContentPane().add(statsButton);
+        mainFrm.getContentPane().add(addButton);
         mainFrm.getContentPane().add(editButton);
+        mainFrm.getContentPane().add(deleteButton);
         mainFrm.setVisible(true);
         addButton.addActionListener(new ActionListener() {
             boolean isConfirmed = isConfirmedd;
@@ -114,31 +118,28 @@ public class ExamsScheduleTable extends JFrame  {
         });
         statsButton.addActionListener(e -> {
             int selectedRow = table.getSelectedRow();
-            //ensuring we have selected row
-            if(selectedRow > -1){
-                String course_name = model.getValueAt(selectedRow,0).toString();
-                int group_year = Integer.parseInt(model.getValueAt(selectedRow,1).toString());
-                mainFrm.getContentPane().remove(scrollPane);
-                mainFrm.getContentPane().remove(addButton);
-                mainFrm.getContentPane().remove(statsButton);
-                mainFrm.revalidate();
-                mainFrm.repaint();
-
-                new StatisticsFrame(course_name,group_year);
-            }
+            String course_name = model.getValueAt(selectedRow,0).toString();
+            int group_year = Integer.parseInt(model.getValueAt(selectedRow,1).toString());
+            JPanel panel = new StatisticsPanel(course_name,group_year);
+            int result = JOptionPane.showConfirmDialog(null, panel,
+                    "Статистика", JOptionPane.OK_OPTION);
+//
+//            //ensuring we have selected row
+//            if(selectedRow > -1){
+//                String course_name = model.getValueAt(selectedRow,0).toString();
+//                int group_year = Integer.parseInt(model.getValueAt(selectedRow,1).toString());
+//                mainFrm.getContentPane().remove(scrollPane);
+//                mainFrm.getContentPane().remove(addButton);
+//                mainFrm.getContentPane().remove(statsButton);
+//                mainFrm.revalidate();
+//                mainFrm.repaint();
+//
+//                new StatisticsPanel(course_name,group_year);
+//            }
 
         });
         editButton.addActionListener(e -> {
-            int i = table.getSelectedRow();
-
-            Vector vector = (Vector) model.getDataVector().get(i);
-            Object[] objArray = vector.toArray();
-
-            Exam exam = new Exam();
-            exam.setCourse_name(objArray[0].toString());
-            exam.setGroup_year((int) objArray[1]);
-            exam.setDate((Date) objArray[2]);
-            exam.setAud((String) objArray[4]);
+            Exam exam = getSelectedExam();
 
 
             JTextField yearField = new JTextField(5);
@@ -158,7 +159,7 @@ public class ExamsScheduleTable extends JFrame  {
             for(Teacher x : dao.readTeachers()){
                 teacherBox.addItem(x.getName());
             }
-            teacherBox.setSelectedItem(objArray[3]);
+            teacherBox.setSelectedItem(dao.readTeacherById(exam.getProfessor_id()).getName());
 
             JComboBox auditoriumBox = new JComboBox();
             for(Auditorium x : dao.readFreeAuds(getTypedDate())){
@@ -187,7 +188,6 @@ public class ExamsScheduleTable extends JFrame  {
                     "Введіть нові дані", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
 //                System.out.println("x value: " + courseNameField.getText());
-                System.out.println("y value: " + yearField.getText());
 
                 Exam x = new Exam();
                 x.setCourse_name(courseBox.getSelectedItem().toString());
@@ -196,18 +196,25 @@ public class ExamsScheduleTable extends JFrame  {
                 x.setProfessor_id(dao.readTeacherByName(teacherBox.getSelectedItem().toString()).get(0).getId());
                 x.setAud(auditoriumBox.getSelectedItem().toString());
                 dao.updateExam(exam, x);
+                model.setRowCount(0);
+                //add all exams from database and show them
+                List<Exam> examz = dao.readExams();
+                for(Exam xx : examz){
+                    model.addRow(new Object[] { xx.getCourse_name(), xx.getGroup_year(), xx.getDate(), dao.readTeacherById(xx.getProfessor_id()).getName() , xx.getAud() });
+                }
 
             }
-//            System.out.println(model.getDataVector().get(0));
-//            Vector vector = (Vector) model.getDataVector().get(0);
-//            Object[] objArray = vector.toArray();
-//
-//            Exam exam = new Exam();
-//            exam.setCourse_name(objArray[0].toString());
-//            exam.setGroup_year((int) objArray[1]);
-//            exam.setDate((Date) objArray[2]);
-//            exam.setProfessor_id((int) objArray[3]);
-//            System.out.println();
+
+        });
+        deleteButton.addActionListener(e -> {
+            Exam exam = getSelectedExam();
+            dao.deleteExam(exam);
+            model.setRowCount(0);
+            //add all exams from database and show them
+            List<Exam> examz = dao.readExams();
+            for(Exam xx : examz){
+                model.addRow(new Object[] { xx.getCourse_name(), xx.getGroup_year(), xx.getDate(), dao.readTeacherById(xx.getProfessor_id()).getName() , xx.getAud() });
+            }
         });
     }
 
@@ -217,6 +224,21 @@ public class ExamsScheduleTable extends JFrame  {
             date = Date.valueOf(model.getValueAt(model.getRowCount()-1,2).toString());
         }
         return date;
+    }
+
+    private Exam getSelectedExam(){
+        int i = table.getSelectedRow();
+
+        Vector vector = (Vector) model.getDataVector().get(i);
+        Object[] objArray = vector.toArray();
+
+        Exam exam = new Exam();
+        exam.setCourse_name(objArray[0].toString());
+        exam.setGroup_year((int) objArray[1]);
+        exam.setDate((Date) objArray[2]);
+        exam.setProfessor_id(dao.readTeacherByName(objArray[3].toString()).get(0).getId());
+        exam.setAud((String) objArray[4]);
+        return exam;
     }
 
 }

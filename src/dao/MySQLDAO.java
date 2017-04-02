@@ -278,6 +278,23 @@ public class MySQLDAO {
         }
     }
 
+    public void deleteExam(Exam exam){
+        String sql = "DELETE FROM EXAM " +
+                "WHERE course_name = ? AND group_year = ?";
+
+        System.out.println(sql);
+
+        try {
+            PreparedStatement ps = getConnection().prepareStatement(sql);
+            ps.setString(1, exam.getCourse_name());
+            ps.setInt(2, exam.getGroup_year());
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println("Feel the pain of sql:" + e);
+        }
+    }
+
     public List<Exam> readExamsByTeacherName(String name){
         List<Exam> list = new ArrayList<>();
         String sql = "SELECT * FROM EXAM\n" +

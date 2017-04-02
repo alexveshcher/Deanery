@@ -12,14 +12,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
 
-public class StatisticsFrame extends JFrame {
+public class StatisticsPanel extends JPanel {
 
 
-    public StatisticsFrame(String course_name, int group_year) {
+    public StatisticsPanel(String course_name, int group_year) {
         MySQLDAO dao = new MySQLDAO();
         JPanel statsPanel = new JPanel();
         statsPanel.setLayout(new GridLayout(0, 1));
-        JLabel exam = new JLabel("Іспит: " + dao.readExamByCourseNameAndGroupYear(course_name,group_year));
 
         JLabel text1 = new JLabel("Кількість студентів");
         JLabel a = new JLabel("A: " + dao.studentsWithA(course_name,group_year));
@@ -32,7 +31,6 @@ public class StatisticsFrame extends JFrame {
         JLabel notPresent = new JLabel("Не присутні: " + dao.notPresentStudents());
         JLabel average = new JLabel("Середній бал: " + dao.averageMark(course_name,group_year));
 
-        statsPanel.add(exam);
         statsPanel.add(text1);
         statsPanel.add(a);
         statsPanel.add(b);
@@ -42,8 +40,6 @@ public class StatisticsFrame extends JFrame {
         statsPanel.add(f);
         statsPanel.add(notPresent);
         statsPanel.add(average);
-        Menu.mainFrm.add(statsPanel);
-        Menu.mainFrm.setVisible(true);
-
+        this.add(statsPanel);
     }
 }
