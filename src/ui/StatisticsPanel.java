@@ -25,7 +25,7 @@ public class StatisticsPanel extends JPanel {
         List<Result> results = dao.readResultsByCourseExam(course_name);
 
 
-        JLabel text1 = new JLabel("Кількість студентів");
+        JLabel text1 = new JLabel("Кількість студентів: " + countStudents(results));
         JLabel a = new JLabel("A: " + countA(results));
         JLabel b = new JLabel("B: " + countB(results));
         JLabel c = new JLabel("C: " + countC(results));
@@ -33,7 +33,7 @@ public class StatisticsPanel extends JPanel {
         JLabel e = new JLabel("E: " + countE(results));
         JLabel f = new JLabel("F: " + countF(results));
 
-        JLabel notPresent = new JLabel("Не присутні: " + dao.notPresentStudents());
+        JLabel notPresent = new JLabel("Не присутні: " + countAbsent(results));
         JLabel average = new JLabel("Середній бал: " + avg(results));
 
         statsPanel.add(text1);
@@ -48,21 +48,40 @@ public class StatisticsPanel extends JPanel {
         this.add(statsPanel);
     }
 
+    private int countStudents(List<Result> results){
+        return results.size();
+    }
+
     private double avg(List<Result> results){
         double sum = 0;
         double size = results.size();
         for(Result result : results){
-            sum+=Double.valueOf(result.getMark());
+            if(result.getMark() !=null && !result.getMark().isEmpty()){
+                sum+= Double.valueOf(result.getMark());
+            }
         }
         return sum/size;
+    }
+
+    private int countAbsent(List<Result> results){
+        int count = 0;
+        for(Result result : results){
+            if(result.getMark() == null ||  result.getMark().isEmpty()){
+                count++;
+            }
+        }
+        return count;
     }
 
     private int countA(List<Result> results){
         int sum = 0;
         for(Result result : results){
-            double mark = Double.valueOf(result.getMark());
-            if(mark > 90 )
-            sum++;
+            if(result.getMark() !=null && !result.getMark().isEmpty() ){
+                double mark = Double.valueOf(result.getMark());
+                if(mark > 90 ){
+                    sum++;
+                }
+            }
         }
         return sum;
     }
@@ -70,9 +89,12 @@ public class StatisticsPanel extends JPanel {
     private int countB(List<Result> results){
         int sum = 0;
         for(Result result : results){
-            double mark = Double.valueOf(result.getMark());
-            if(mark > 80 && mark < 91 )
-                sum++;
+            if(result.getMark() !=null && !result.getMark().isEmpty() ){
+                double mark = Double.valueOf(result.getMark());
+                if(mark > 80 && mark < 91 ){
+                    sum++;
+                }
+            }
         }
         return sum;
     }
@@ -80,9 +102,12 @@ public class StatisticsPanel extends JPanel {
     private int countC(List<Result> results){
         int sum = 0;
         for(Result result : results){
-            double mark = Double.valueOf(result.getMark());
-            if(mark > 70 && mark < 81 )
-                sum++;
+            if(result.getMark() !=null && !result.getMark().isEmpty() ){
+                double mark = Double.valueOf(result.getMark());
+                if(mark > 70 && mark < 81 ){
+                    sum++;
+                }
+            }
         }
         return sum;
     }
@@ -90,18 +115,24 @@ public class StatisticsPanel extends JPanel {
     private int countD(List<Result> results){
         int sum = 0;
         for(Result result : results){
-            double mark = Double.valueOf(result.getMark());
-            if(mark > 65 && mark < 71 )
-                sum++;
+            if(result.getMark() !=null && !result.getMark().isEmpty()) {
+                double mark = Double.valueOf(result.getMark());
+                if(mark > 65 && mark < 71 ){
+                    sum++;
+                }
+            }
         }
         return sum;
     }
     private int countE(List<Result> results){
         int sum = 0;
         for(Result result : results){
-            double mark = Double.valueOf(result.getMark());
-            if(mark > 59 && mark < 66 )
-                sum++;
+            if(result.getMark() !=null && !result.getMark().isEmpty() ){
+                double mark = Double.valueOf(result.getMark());
+                if(mark > 59 && mark < 66 ){
+                    sum++;
+                }
+            }
         }
         return sum;
     }
@@ -109,9 +140,12 @@ public class StatisticsPanel extends JPanel {
     private int countF(List<Result> results){
         int sum = 0;
         for(Result result : results){
-            double mark = Double.valueOf(result.getMark());
-            if(mark < 60 )
-                sum++;
+            if(result.getMark() !=null && !result.getMark().isEmpty() ){
+                double mark = Double.valueOf(result.getMark());
+                if(mark < 60){
+                    sum++;
+                }
+            }
         }
         return sum;
     }

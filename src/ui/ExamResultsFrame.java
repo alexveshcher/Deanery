@@ -87,10 +87,10 @@ public class ExamResultsFrame extends JFrame {
         Map<Integer,Integer> marks =  new HashMap<>();
         int tableSize = table.getRowCount();
         for(int i = 0; i < tableSize; i++){
-            String markCell =  table.getValueAt(i,1).toString();
+            Object markCell =  table.getValueAt(i,1);
             Integer mark = null;
-            if(!markCell.equals("")){
-                mark = Integer.valueOf(markCell);
+            if(markCell!=null && !markCell.toString().equals("")){
+                mark = Integer.valueOf(markCell.toString());
             }
 
             marks.put(list.get(i).getId(),mark);

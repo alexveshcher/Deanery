@@ -33,7 +33,7 @@ WHERE date = "01.01.2017";
 
 SELECT COUNT(DISTINCT student_id)
 FROM result
-WHERE mark = "61" AND group_id IN (SELECT id		
+WHERE mark = "61" AND group_id IN (SELECT id
   						                     FROM tgroup
   						                     WHERE year AND course_name IN (SELECT group_year AND course_name
   						           	                                        FROM exam
@@ -43,7 +43,7 @@ WHERE mark = "61" AND group_id IN (SELECT id
 
 SELECT COUNT(DISTINCT student_id)
 FROM result
-WHERE mark = "ABSENT" AND group_id IN (SELECT id		
+WHERE mark = "ABSENT" AND group_id IN (SELECT id
   						                         FROM tgroup
   						                         WHERE year AND course_name IN (SELECT group_year AND course_name
   						           	                                            FROM exam
@@ -53,7 +53,7 @@ WHERE mark = "ABSENT" AND group_id IN (SELECT id
 
 SELECT AVG(mark)
 FROM result
-WHERE group_id IN (SELECT id		
+WHERE group_id IN (SELECT id
   				         FROM tgroup
   				         WHERE year AND course_name IN (SELECT group_year AND course_name
   						           	                        FROM exam
@@ -68,8 +68,8 @@ WHERE id IN (SELECT student_id
              WHERE group_id IN (SELECT id
              	                  FROM tgroup
              	                  WHERE course_name = "БМТ"))
-                                
-                                
+
+
                                                      Індивідуальний звіт
     На другу ітерацію переді мною було поставлено задачу написання наступних запитів до використовуваної бази даних:
 1. Вивести всі екзамени, які проводить заданий викладач
@@ -82,4 +82,4 @@ WHERE id IN (SELECT student_id
 8. Для заданого предмету з екзаменів вивести студентів, які слухають дисципліну
 
 Вищевказані запити були описані за допомогою мови структурованих запитів SQL (structured query language). Код запитів
-міститься у вихідному файлі quieries11.sql.  
+міститься у вихідному файлі quieries11.sql.
